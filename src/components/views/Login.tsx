@@ -22,6 +22,7 @@ const FormField = (props) => {
         placeholder="enter here.."
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
+        type={props.type || "text"}
       />
     </div>
   );
@@ -31,16 +32,24 @@ FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  type: PropTypes.string,
 };
 
 const Login = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>(null);
-  const [username, setUsername] = useState<string>(null);
+  const [firstname, setFirstname] = useState<string>(null);
+  const [lastname, setLastname] = useState<string>(null);
+  const [birthdate, setBirthdate] = useState<string>(null);
+  const [gender, setGender] = useState<string>(null);
 
   const doLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ username, name });
+      const requestBody = JSON.stringify({ 
+        firstname, 
+        lastname, 
+        birthdate, 
+        gender 
+      });
       const response = await api.post("/users", requestBody);
 
       // Get the returned user and update a new object.
@@ -63,18 +72,36 @@ const Login = () => {
       <div className="login container">
         <div className="login form">
           <FormField
-            label="Username"
-            value={username}
-            onChange={(un: string) => setUsername(un)}
+            label="First Name"
+            value={firstname}
+            onChange={(fn: string) => setFirstname(fn)}
           />
           <FormField
-            label="Name"
-            value={name}
-            onChange={(n) => setName(n)}
+            label="Last Name"
+            value={lastname}
+            onChange={(ln: string) => setLastname(ln)}
           />
+          <FormField
+            label="Birthdate"
+            value={birthdate}
+            onChange={(bd: string) => setBirthdate(bd)}
+            type="date"
+          />
+          <div className="login field">
+            <label className="login label">Gender</label>
+            <select 
+              className="login input"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="">Select gender...</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+            </select>
+          </div>
           <div className="login button-container">
             <Button
-              disabled={!username || !name}
+              disabled={!firstname || !lastname || !birthdate || !gender}
               width="100%"
               onClick={() => doLogin()}
             >
